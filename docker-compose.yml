@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: threadiq-postgres
+    environment:
+      POSTGRES_DB: threadiq
+      POSTGRES_USER: threadiq
+      POSTGRES_PASSWORD: threadiq
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+    driver: local
