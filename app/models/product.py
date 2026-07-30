@@ -1,4 +1,5 @@
 import uuid
+from sqlalchemy.orm import relationship
 
 from sqlalchemy import Column, String, Enum as SqlAlchemyEnum
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
@@ -19,3 +20,8 @@ class Product(TimestampMixin, Base):
         nullable=False,
         default=ProductStatus.ACTIVE,
     )
+    jobs = relationship(
+    "Job",
+    back_populates="product",
+    cascade="all, delete-orphan",
+)
