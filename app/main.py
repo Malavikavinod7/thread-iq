@@ -2,13 +2,15 @@ from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from app.api.v1.products import router as v1_router
+from app.api.v1.jobs import router as jobs_router
+from app.api.v1.products import router as products_router
 from app.core.config import settings
 from app.core.exceptions import NotFoundError
 
 app = FastAPI(title=settings.project_name)
 
-app.include_router(v1_router, prefix="/api/v1")
+app.include_router(products_router, prefix="/api/v1")
+app.include_router(jobs_router, prefix="/api/v1")
 
 
 @app.exception_handler(NotFoundError)

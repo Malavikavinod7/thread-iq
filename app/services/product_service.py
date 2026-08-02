@@ -4,12 +4,15 @@ from app.repositories.product_repository import ProductRepository
 
 
 class ProductService:
-    """Application service containing product business rules."""
 
-    def __init__(self, repository: ProductRepository) -> None:
-        self._repository = repository
+    def __init__(self, repository: ProductRepository):
+        self.repository = repository
 
-    def list_products(self) -> list[Product]:
-        """Return only active products to the application layer."""
-        products = self._repository.list_all()
-        return [product for product in products if product.status == ProductStatus.ACTIVE]
+    def create_product(self, product: Product):
+        return self.repository.create(product)
+
+    def list_products(self):
+        return self.repository.list_all()
+
+    def get_product(self, product_id):
+        return self.repository.get_by_id(product_id)
