@@ -1,3 +1,4 @@
+import uuid
 from uuid import UUID
 
 from sqlalchemy.orm import Session
@@ -46,3 +47,31 @@ class JobRepository:
         self.db.commit()
 
         return True
+
+
+class InMemoryJobRepository(JobRepository):
+
+    def __init__(self):
+        self._jobs: dict[UUID, Job] = {}
+
+    def create(self, job: Job) -> Job:
+        if getattr(job, "id", None) is None:
+            job.id = uuid.uuid4()
+        self._jobs[job.id] = job
+        return job
+
+    def get_by_id(self, job_id: UUID) -> Job | None:
+        return self._jobs.get(job_id)
+
+    def get_all(self) -> list[Job]:
+        return list(self._jobs.values())
+
+    def update(self, job: Job) -> Job:
+        self._jobs[job.id] = job
+        return job
+
+    def delete(self, job_id: UUID) -> bool:
+        if job_id in self._jobs:
+            del self._jobs[job_id]
+            return True
+        return False

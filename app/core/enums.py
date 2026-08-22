@@ -8,5 +8,6 @@ class ProductStatus(str, Enum):
 class JobStatus(str, Enum):
     PENDING = "PENDING"
     RUNNING = "RUNNING"
-    SUCCESS = "SUCCESS"
+    COMPLETED = "COMPLETED"
+    SUCCESS = "COMPLETED"
     FAILED = "FAILED"
