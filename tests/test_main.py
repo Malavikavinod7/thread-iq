@@ -69,11 +69,9 @@ def test_products_pagination_and_filtering():
 
 
 def test_background_jobs_dispatch_and_polling():
-    from app.core.config import settings
     from app.core.dependencies import get_job_repository
     from app.repositories.job_repository import InMemoryJobRepository
 
-    settings.async_jobs = True
     product_repo = InMemoryProductRepository()
     job_repo = InMemoryJobRepository()
 
@@ -93,8 +91,8 @@ def test_background_jobs_dispatch_and_polling():
         assert job_data["id"] == data["latest_job_id"]
         assert job_data["status"] in ("PENDING", "RUNNING", "COMPLETED")
     finally:
-        settings.async_jobs = False
         app.dependency_overrides.clear()
+
 
 
 def test_delete_product_endpoint():
