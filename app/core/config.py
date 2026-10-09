@@ -5,7 +5,8 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables and .env files."""
 
     project_name: str = "ThreadIQ"
-    database_url: str = "postgresql://postgres:postgres@localhost:5432/threadiq"
+    database_url: str = "postgresql://localhost:5432/threadiq"
+
 
     environment: str = "development"
     debug: bool = False
