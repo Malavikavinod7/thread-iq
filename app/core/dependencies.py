@@ -1,11 +1,17 @@
 from collections.abc import Generator
 from typing import Annotated
 
-from fastapi import Depends
+from fastapi import BackgroundTasks, Depends
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.db.session import get_db_session
-from app.jobs.dispatcher import JobDispatcher, SyncJobDispatcher
+from app.jobs.dispatcher import (
+    BackgroundTaskJobDispatcher,
+    JobDispatcher,
+    SyncJobDispatcher,
+)
+
 from app.repositories.job_repository import JobRepository
 from app.repositories.product_repository import (
     ProductRepository,
@@ -66,8 +72,12 @@ def get_job_dispatcher(
         AgentOrchestrator,
         Depends(get_agent_orchestrator),
     ],
+    background_tasks: BackgroundTasks,
 ) -> JobDispatcher:
+    if settings.async_jobs:
+        return BackgroundTaskJobDispatcher(orchestrator, background_tasks)
     return SyncJobDispatcher(orchestrator)
+
 
 
 JobDispatcherDep = Annotated[

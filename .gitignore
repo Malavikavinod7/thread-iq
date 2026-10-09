@@ -1,14 +1,33 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
+*$py.class
+
+# Caches and logs
 *.log
-.env
-.venv/
-venv/
-.env.*
 .pytest_cache/
 .mypy_cache/
+.ruff_cache/
+
+# Environments & secrets
+.env
+.env.*
+.env.local
+.venv/
+venv/
+ENV/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Vercel & Deployments
+.vercel/
+
+# OS / Editor specific
+.DS_Store
+Thumbs.db
 .idea/
 .vscode/
-.DS_Store
+*.swp

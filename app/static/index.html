@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreadIQ — Fashion Catalog Intelligence</title>
+    <meta name="description" content="AI-powered fashion catalog enrichment platform with vision analysis, copy generation, quality validation, and semantic embedding.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ── Reset & Variables ─────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg-primary: #07070e;
+            --bg-card: rgba(255, 255, 255, 0.035);
+            --bg-card-hover: rgba(255, 255, 255, 0.06);
+            --border: rgba(255, 255, 255, 0.07);
+            --border-hover: rgba(255, 255, 255, 0.14);
+            --text-primary: #e2e8f0;
+            --text-secondary: #8892a6;
+            --text-muted: #5a6377;
+            --accent: #818cf8;
+            --accent-bright: #a78bfa;
+            --accent-glow: rgba(129, 140, 248, 0.15);
+            --success: #34d399;
+            --success-bg: rgba(52, 211, 153, 0.1);
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --radius: 14px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ── Background Gradient ──────────────────────── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 10%, rgba(99, 102, 241, 0.08), transparent),
+                radial-gradient(ellipse 60% 50% at 80% 80%, rgba(139, 92, 246, 0.06), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Layout ───────────────────────────────────── */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Header ───────────────────────────────────── */
+        .header {
+            text-align: center;
+            padding: 56px 0 40px;
+        }
+
+        .header__brand {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--accent), var(--accent-bright));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+
+        .header__title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+
+        .header__sub {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        /* ── Stats Bar ────────────────────────────────── */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .stat-card__value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-card__label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        /* ── Create Section ───────────────────────────── */
+        .create-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            margin-bottom: 32px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .create-section__title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .create-section__desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .form-input {
+            flex: 1;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .form-input::placeholder { color: var(--text-muted); }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(99, 102, 241, 0.35);
+        }
+
+        .btn-primary:active { transform: translateY(0); }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-msg {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .error-msg.visible { display: block; }
+
+        /* ── Pipeline Visualization ───────────────────── */
+        .pipeline {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            margin-bottom: 32px;
+            display: none;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .pipeline.visible {
+            display: block;
+            animation: slideIn 0.4s ease;
+        }
+
+        .pipeline__title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .pipeline__steps {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .pipeline__steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            right: 40px;
+            height: 2px;
+            background: var(--border);
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            z-index: 1;
+            flex: 1;
+        }
+
+        .step__circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .step.active .step__circle {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+            box-shadow: 0 0 20px var(--accent-glow);
+            animation: pulse 1.5s ease infinite;
+        }
+
+        .step.done .step__circle {
+            border-color: var(--success);
+            background: var(--success-bg);
+            color: var(--success);
+            box-shadow: none;
+            animation: none;
+        }
+
+        .step__label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-align: center;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .step.active .step__label,
+        .step.done .step__label { color: var(--text-secondary); }
+
+        /* ── Result Card ──────────────────────────────── */
+        .result {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            margin-bottom: 40px;
+            display: none;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .result.visible {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        .result__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .result__ai-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .result__original {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .result__score {
+            text-align: right;
+        }
+
+        .result__score-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .result__score-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result__badges {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        .badge__dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .result__description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .result__tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+        .tag {
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: var(--accent-glow);
+            color: var(--accent);
+            font-size: 0.72rem;
+            font-weight: 500;
+        }
+
+        /* ── Catalog Grid ─────────────────────────────── */
+        .catalog__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .catalog__title {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .btn-ghost {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 60px;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            transition: all 0.3s;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .product-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .product-card__top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .product-card__name {
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+            flex: 1;
+        }
+
+        .product-card__score {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-left: 12px;
+            white-space: nowrap;
+        }
+
+        .quality-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .quality-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #f87171, #fbbf24, #34d399);
+            transition: width 1s ease;
+        }
+
+        .product-card__desc {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-card__meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .meta-chip {
+            font-size: 0.68rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .product-card__tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .product-card .tag {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state__icon { font-size: 2.5rem; margin-bottom: 12px; }
+        .empty-state__text { font-size: 0.9rem; }
+
+        /* ── Footer ───────────────────────────────────── */
+        .footer {
+            text-align: center;
+            padding: 32px 0 48px;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            letter-spacing: 0.5px;
+        }
+
+        .footer span {
+            color: var(--accent);
+            margin: 0 2px;
+        }
+
+        /* ── Animations ───────────────────────────────── */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 12px var(--accent-glow); }
+            50% { box-shadow: 0 0 28px var(--accent-glow), 0 0 48px rgba(99,102,241,0.08); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+
+        /* ── Image / Photo Thumbnails ───────────────────── */
+        .thumb-box {
+            width: 100%;
+            height: 160px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin-bottom: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .thumb-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ── Responsive ───────────────────────────────── */
+        @media (max-width: 640px) {
+            .header__title { font-size: 2rem; }
+            .stats { grid-template-columns: 1fr; }
+            .form-row { flex-direction: column; }
+            .pipeline__steps { flex-wrap: wrap; gap: 16px; }
+            .pipeline__steps::before { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header__brand">ThreadIQ</div>
+            <h1 class="header__title">Fashion Catalog Intelligence</h1>
+            <p class="header__sub">
+                Create a product and watch our AI pipeline enrich it with visual analysis,
+                catalog copy, quality validation, and semantic embeddings.
+            </p>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-card__value" id="stat-products">0</div>
+                <div class="stat-card__label">Products</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__value" id="stat-enriched">0</div>
+                <div class="stat-card__label">Enriched</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__value" id="stat-quality">—</div>
+                <div class="stat-card__label">Avg Quality</div>
+            </div>
+        </div>
+
+        <!-- Create Product -->
+        <section class="create-section">
+            <h2 class="create-section__title">Create & Enrich</h2>
+            <p class="create-section__desc">Enter a fashion product name to run the full AI enrichment pipeline.</p>
+            <div class="form-row" style="flex-wrap: wrap;">
+                <input
+                    type="text"
+                    class="form-input"
+                    id="product-input"
+                    placeholder="Product title e.g. Navy Blue Slim Denim Jacket"
+                    maxlength="255"
+                    style="flex: 2; min-width: 220px;"
+                >
+                <input
+                    type="url"
+                    class="form-input"
+                    id="image-input"
+                    placeholder="Photo / Image URL (optional)"
+                    maxlength="500"
+                    style="flex: 2; min-width: 220px;"
+                >
+                <button class="btn btn-primary" id="create-btn" onclick="handleCreate()">
+                    Create & Enrich
+                </button>
+            </div>
+            <div class="error-msg" id="error-msg"></div>
+        </section>
+
+        <!-- Pipeline -->
+        <section class="pipeline" id="pipeline">
+            <div class="pipeline__title">AI Enrichment Pipeline</div>
+            <div class="pipeline__steps">
+                <div class="step" id="step-vision">
+                    <div class="step__circle">👁</div>
+                    <div class="step__label">Vision<br>Analysis</div>
+                </div>
+                <div class="step" id="step-description">
+                    <div class="step__circle">✎</div>
+                    <div class="step__label">Copy<br>Generation</div>
+                </div>
+                <div class="step" id="step-validation">
+                    <div class="step__circle">✓</div>
+                    <div class="step__label">Quality<br>Validation</div>
+                </div>
+                <div class="step" id="step-embedding">
+                    <div class="step__circle">◈</div>
+                    <div class="step__label">Vector<br>Embedding</div>
+                </div>
+                <div class="step" id="step-done">
+                    <div class="step__circle">★</div>
+                    <div class="step__label">Pipeline<br>Complete</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Result Card -->
+        <section class="result" id="result-card"></section>
+
+        <!-- Catalog -->
+        <section>
+            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                <input type="text" id="search-input" class="form-input" placeholder="Semantic search e.g. blue denim jacket..." style="flex: 1;" onkeydown="if(event.key==='Enter') handleSearch()">
+                <button class="btn btn-primary" onclick="handleSearch()" style="padding: 8px 18px; font-size: 0.85rem;">🔍 Search</button>
+                <button class="btn-ghost" onclick="clearSearch()">Clear</button>
+            </div>
+            <div class="catalog__header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2 class="catalog__title">Product Catalog</h2>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <button class="btn-ghost" id="prev-btn" onclick="changePage(-1)" disabled>← Prev</button>
+                    <span id="page-info" style="font-size: 0.8rem; color: var(--text-secondary);">Page 1</span>
+                    <button class="btn-ghost" id="next-btn" onclick="changePage(1)" disabled>Next →</button>
+                    <button class="btn-ghost" onclick="loadProducts(currentOffset)">↻ Refresh</button>
+                </div>
+            </div>
+            <div id="catalog-grid" class="catalog-grid"></div>
+        </section>
+
+
+
+        <!-- Footer -->
+        <footer class="footer">
+            ThreadIQ AI Pipeline <span>•</span> Vision <span>•</span> Description <span>•</span> Validation <span>•</span> Embedding
+        </footer>
+    </div>
+
+    <script>
+        const API = '';  // Same origin
+
+        const COLOR_MAP = {
+            'navy blue': '#2c3e6b', 'blue': '#3b82f6', 'black': '#2d2d2d',
+            'white': '#e8e8e8', 'crimson red': '#dc2626', 'red': '#ef4444',
+            'emerald green': '#059669', 'green': '#22c55e', 'beige': '#d4b896',
+            'chocolate brown': '#5c3d2e', 'brown': '#92400e', 'charcoal grey': '#4b5563',
+            'grey': '#6b7280', 'gray': '#6b7280', 'pastel pink': '#f9a8d4',
+            'pink': '#ec4899', 'mustard yellow': '#ca8a04', 'yellow': '#eab308',
+        };
+
+        function getColorHex(colorName) {
+            if (!colorName) return '#818cf8';
+            const lower = colorName.toLowerCase();
+            return COLOR_MAP[lower] || '#818cf8';
+        }
+
+        function parseTags(tagsStr) {
+            if (!tagsStr) return [];
+            try { return JSON.parse(tagsStr); } catch { return []; }
+        }
+
+        function scoreColor(score) {
+            if (score >= 0.85) return 'var(--success)';
+            if (score >= 0.6) return 'var(--warning)';
+            return 'var(--danger)';
+        }
+
+        // ── Create Product ────────────────────────────
+        async function handleCreate() {
+            const input = document.getElementById('product-input');
+            const imgInput = document.getElementById('image-input');
+            const btn = document.getElementById('create-btn');
+            const errEl = document.getElementById('error-msg');
+            const name = input.value.trim();
+            const imageUrl = imgInput ? imgInput.value.trim() : '';
+
+            errEl.classList.remove('visible');
+            if (!name) {
+                errEl.textContent = 'Please enter a product name.';
+                errEl.classList.add('visible');
+                return;
+            }
+
+            // Start pipeline animation
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span>Enriching…';
+            showPipeline();
+
+            try {
+                // Fire API request
+                const res = await fetch(`${API}/api/v1/products`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, image_url: imageUrl || null }),
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.detail || 'Failed to create product');
+                }
+
+                let product = await res.json();
+
+                if (product.latest_job_id) {
+                    await pollJobProgress(product.latest_job_id);
+                    const freshRes = await fetch(`${API}/api/v1/products/${product.id}`);
+                    if (freshRes.ok) product = await freshRes.json();
+                } else {
+                    await animatePipeline();
+                }
+
+                // Show result card
+                showResult(product);
+
+                // Refresh catalog
+                input.value = '';
+                if (imgInput) imgInput.value = '';
+                loadProducts();
+
+            } catch (e) {
+                errEl.textContent = e.message;
+                errEl.classList.add('visible');
+                hidePipeline();
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Create & Enrich';
+            }
+        }
+
+        async function pollJobProgress(jobId) {
+            const stepMap = {
+                'VISION_AGENT': 'step-vision',
+                'DESCRIPTION_AGENT': 'step-description',
+                'VALIDATION_AGENT': 'step-validation',
+                'EMBEDDING_AGENT': 'step-embedding',
+                'COMPLETED': 'step-done'
+            };
+            return new Promise((resolve, reject) => {
+                const timer = setInterval(async () => {
+                    try {
+                        const res = await fetch(`${API}/api/v1/jobs/${jobId}`);
+                        if (!res.ok) return;
+                        const job = await res.json();
+                        if (job.current_step && stepMap[job.current_step]) {
+                            const activeId = stepMap[job.current_step];
+                            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+                            document.getElementById(activeId).classList.add('active');
+                        }
+                        if (job.status === 'COMPLETED') {
+                            clearInterval(timer);
+                            document.querySelectorAll('.step').forEach(s => s.classList.add('done'));
+                            resolve(job);
+                        } else if (job.status === 'FAILED') {
+                            clearInterval(timer);
+                            reject(new Error(job.error_message || 'Background job failed'));
+                        }
+                    } catch (err) {
+                        console.error('Job polling error:', err);
+                    }
+                }, 1000);
+            });
+        }
+
+
+        function hidePipeline() {
+            document.getElementById('pipeline').classList.remove('visible');
+        }
+
+        function animatePipeline() {
+            const steps = ['step-vision', 'step-description', 'step-validation', 'step-embedding', 'step-done'];
+            return new Promise(resolve => {
+                steps.forEach((id, i) => {
+                    setTimeout(() => {
+                        if (i > 0) document.getElementById(steps[i - 1]).classList.replace('active', 'done');
+                        document.getElementById(id).classList.add('active');
+                        if (i === steps.length - 1) {
+                            setTimeout(() => {
+                                document.getElementById(id).classList.replace('active', 'done');
+                                resolve();
+                            }, 400);
+                        }
+                    }, i * 450);
+                });
+            });
+        }
+
+        // ── Result Card ───────────────────────────────
+
+        function showResult(product) {
+            const el = document.getElementById('result-card');
+            const tags = parseTags(product.tags);
+            const score = product.quality_score;
+            const hex = getColorHex(product.primary_color);
+
+            el.innerHTML = `
+                ${product.image_url ? `<div class="thumb-box"><img src="${product.image_url}" alt="${product.name}" onerror="this.parentNode.style.display='none'"></div>` : ''}
+                <div class="result__header">
+                    <div>
+                        <div class="result__ai-title">${product.ai_title || product.name}</div>
+                        <div class="result__original">Original: ${product.name}</div>
+                    </div>
+                    <div class="result__score">
+                        <div class="result__score-value" style="color:${score ? scoreColor(score) : 'var(--text-muted)'}">
+                            ${score != null ? score.toFixed(2) : '—'}
+                        </div>
+                        <div class="result__score-label">Quality Score</div>
+                    </div>
+                </div>
+                <div class="result__badges">
+                    ${product.primary_color ? `<span class="badge"><span class="badge__dot" style="background:${hex}"></span>${product.primary_color}</span>` : ''}
+                    ${product.category ? `<span class="badge">${product.category}</span>` : ''}
+                </div>
+                <div class="result__description">${product.ai_description || ''}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; border-top:1px solid var(--border); padding-top:12px;">
+                    <div class="result__tags">
+                        ${tags.map(t => `<span class="tag">${t}</span>`).join('')}
+                    </div>
+                    <button class="btn-ghost" style="color:var(--danger); font-size:0.8rem; border-color:rgba(248,113,113,0.3);" onclick="handleDelete('${product.id}')">🗑 Delete Product</button>
+                </div>
+            `;
+            el.classList.add('visible');
+        }
+
+        async function handleDelete(productId) {
+            if (!confirm('Are you sure you want to delete this product?')) return;
+            try {
+                const res = await fetch(`${API}/api/v1/products/${productId}`, { method: 'DELETE' });
+                if (res.ok) {
+                    const resultCard = document.getElementById('result-card');
+                    if (resultCard) resultCard.classList.remove('visible');
+                    loadProducts(currentOffset);
+                }
+            } catch (e) {
+                console.error('Failed to delete product:', e);
+            }
+        }
+
+        // ── Catalog ───────────────────────────────────
+        let currentOffset = 0;
+        const pageLimit = 6;
+        let totalProducts = 0;
+
+        async function loadProducts(offset = 0) {
+            currentOffset = Math.max(0, offset);
+            try {
+                const res = await fetch(`${API}/api/v1/products?limit=${pageLimit}&offset=${currentOffset}`);
+                const data = await res.json();
+                const products = data.items || data;
+                totalProducts = data.total || products.length;
+                renderCatalog(products);
+                updateStats(products, totalProducts);
+                updatePaginationControls();
+            } catch (e) {
+                console.error('Failed to load products:', e);
+            }
+        }
+
+        function changePage(direction) {
+            const newOffset = currentOffset + (direction * pageLimit);
+            if (newOffset >= 0 && newOffset < totalProducts) {
+                loadProducts(newOffset);
+            }
+        }
+
+        function updatePaginationControls() {
+            const pageNum = Math.floor(currentOffset / pageLimit) + 1;
+            const totalPages = Math.ceil(totalProducts / pageLimit) || 1;
+            const pageInfo = document.getElementById('page-info');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            if (pageInfo) pageInfo.textContent = `Page ${pageNum} of ${totalPages}`;
+            if (prevBtn) prevBtn.disabled = currentOffset <= 0;
+            if (nextBtn) nextBtn.disabled = (currentOffset + pageLimit) >= totalProducts;
+        }
+
+        function updateStats(products, total = 0) {
+            document.getElementById('stat-products').textContent = total || products.length;
+            const enriched = products.filter(p => p.ai_title).length;
+            document.getElementById('stat-enriched').textContent = enriched;
+            const scores = products.filter(p => p.quality_score != null).map(p => p.quality_score);
+            const avg = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length) : null;
+            document.getElementById('stat-quality').textContent = avg != null ? avg.toFixed(2) : '—';
+        }
+
+        async function handleSearch() {
+            const query = document.getElementById('search-input').value.trim();
+            if (!query) return loadProducts(0);
+            try {
+                const res = await fetch(`${API}/api/v1/products/search`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query, limit: 10 })
+                });
+                const data = await res.json();
+                const products = data.map(item => item.product);
+                renderCatalog(products);
+                updateStats(products, products.length);
+            } catch (e) {
+                console.error('Search failed:', e);
+            }
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            loadProducts(0);
+        }
+
+        function renderCatalog(products) {
+            const grid = document.getElementById('catalog-grid');
+
+            if (!products.length) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-state__icon">✦</div>
+                        <div class="empty-state__text">No products yet. Create your first one above!</div>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = products.map(p => {
+                const tags = parseTags(p.tags);
+                const score = p.quality_score;
+                const hex = getColorHex(p.primary_color);
+                const pct = score != null ? Math.round(score * 100) : 0;
+
+                return `
+                    <div class="product-card">
+                        ${p.image_url ? `<div class="thumb-box"><img src="${p.image_url}" alt="${p.name}" onerror="this.parentNode.style.display='none'"></div>` : ''}
+                        <div class="product-card__top">
+                            <div class="product-card__name">${p.ai_title || p.name}</div>
+                            ${score != null ? `<div class="product-card__score" style="color:${scoreColor(score)}">${score.toFixed(2)}</div>` : ''}
+                        </div>
+                        <div class="quality-bar"><div class="quality-fill" style="width:${pct}%"></div></div>
+                        ${p.ai_description ? `<div class="product-card__desc">${p.ai_description}</div>` : ''}
+                        <div class="product-card__meta">
+                            ${p.primary_color ? `<span class="meta-chip"><span class="badge__dot" style="background:${hex};width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle"></span>${p.primary_color}</span>` : ''}
+                            ${p.category ? `<span class="meta-chip">${p.category}</span>` : ''}
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px;">
+                            <div class="product-card__tags">
+                                ${tags.map(t => `<span class="tag">${t}</span>`).join('')}
+                            </div>
+                            <button class="btn-ghost" style="color:var(--danger); font-size:0.75rem; padding:2px 8px;" onclick="handleDelete('${p.id}')">🗑 Delete</button>
+                        </div>
+                    </div>
+            }).join('');
+        }
+
+        // ── Init ──────────────────────────────────────
+
+        document.getElementById('product-input').addEventListener('keydown', e => {
+            if (e.key === 'Enter') handleCreate();
+        });
+
+        loadProducts();
+    </script>
+</body>
+</html>

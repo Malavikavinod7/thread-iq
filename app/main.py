@@ -1,13 +1,34 @@
+from pathlib import Path
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, JSONResponse
+
 
 from app.api.v1.jobs import router as jobs_router
 from app.api.v1.products import router as products_router
 from app.core.config import settings
 from app.core.exceptions import NotFoundError
+from app.db.session import create_tables
 
-app = FastAPI(title=settings.project_name)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Create database tables on startup."""
+    create_tables()
+    yield
+
+
+app = FastAPI(title=settings.project_name, lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(products_router, prefix="/api/v1")
 app.include_router(jobs_router, prefix="/api/v1")
@@ -33,3 +54,11 @@ def read_root() -> dict[str, str]:
 def health_check() -> dict[str, str]:
     """Return a simple health status payload."""
     return {"status": "healthy"}
+
+
+@app.get("/demo", tags=["demo"], include_in_schema=False)
+def demo_page():
+    """Serve the interactive demo dashboard."""
+    static_file = Path(__file__).parent / "static" / "index.html"
+    return FileResponse(static_file)
+

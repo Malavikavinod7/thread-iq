@@ -1,0 +1,152 @@
+[
+  {
+    "name": "Navy Blue Slim Denim Jeans",
+    "expected_color": "Navy Blue",
+    "expected_category": "Bottoms / Denim"
+  },
+  {
+    "name": "Crimson Red Silk Evening Dress",
+    "expected_color": "Crimson Red",
+    "expected_category": "Apparel / Dresses"
+  },
+  {
+    "name": "Classic Black Genuine Leather Jacket",
+    "expected_color": "Black",
+    "expected_category": "Outerwear / Jackets"
+  },
+  {
+    "name": "100% Breathable White Cotton T-Shirt",
+    "expected_color": "White",
+    "expected_category": "Apparel / Tops"
+  },
+  {
+    "name": "Emerald Green Floral Summer Dress",
+    "expected_color": "Emerald Green",
+    "expected_category": "Apparel / Dresses"
+  },
+  {
+    "name": "Chocolate Brown Leather Shoulder Bag",
+    "expected_color": "Chocolate Brown",
+    "expected_category": "Accessories / Bags"
+  },
+  {
+    "name": "Charcoal Grey Tailored Wool Suit Pants",
+    "expected_color": "Charcoal Grey",
+    "expected_category": "Bottoms / Trousers"
+  },
+  {
+    "name": "Mustard Yellow Casual Knit Sweater",
+    "expected_color": "Mustard Yellow",
+    "expected_category": "Apparel / Tops"
+  },
+  {
+    "name": "Pastel Pink Running Shoes",
+    "expected_color": "Pastel Pink",
+    "expected_category": "Footwear"
+  },
+  {
+    "name": "Blue Denim Jacket with Pockets",
+    "expected_color": "Blue",
+    "expected_category": "Outerwear / Jackets"
+  },
+  {
+    "name": "Beige Linen Beach Shirt",
+    "expected_color": "Beige",
+    "expected_category": "Apparel / Tops"
+  },
+  {
+    "name": "Black Leather Running Sneakers",
+    "expected_color": "Black",
+    "expected_category": "Footwear / Sneakers"
+  },
+  {
+    "name": "Navy Blue Striped Cotton Shirt",
+    "expected_color": "Navy Blue",
+    "expected_category": "Apparel / Tops"
+  },
+  {
+    "name": "Crimson Red Leather Tote Bag",
+    "expected_color": "Crimson Red",
+    "expected_category": "Accessories / Bags"
+  },
+  {
+    "name": "White Canvas Low Top Sneakers",
+    "expected_color": "White",
+    "expected_category": "Footwear"
+  },
+  {
+    "name": "Emerald Green Trench Coat",
+    "expected_color": "Emerald Green",
+    "expected_category": "Outerwear / Coats"
+  },
+  {
+    "name": "Chocolate Brown Wool Winter Coat",
+    "expected_color": "Chocolate Brown",
+    "expected_category": "Outerwear / Coats"
+  },
+  {
+    "name": "Charcoal Grey Slim Fit Trousers",
+    "expected_color": "Charcoal Grey",
+    "expected_category": "Bottoms / Trousers"
+  },
+  {
+    "name": "Pastel Pink Silk Scarf",
+    "expected_color": "Pastel Pink",
+    "expected_category": "Apparel"
+  },
+  {
+    "name": "Mustard Yellow Graphic Tee",
+    "expected_color": "Mustard Yellow",
+    "expected_category": "Apparel / Tops"
+  },
+  {
+    "name": "Blue Ripped Denim Shorts",
+    "expected_color": "Blue",
+    "expected_category": "Bottoms / Denim"
+  },
+  {
+    "name": "Black Formal Leather Dress Shoes",
+    "expected_color": "Black",
+    "expected_category": "Footwear"
+  },
+  {
+    "name": "Beige Wool Knit Cardigan",
+    "expected_color": "Beige",
+    "expected_category": "Apparel / Tops"
+  },
+  {
+    "name": "White Plaid Casual Button Shirt",
+    "expected_color": "White",
+    "expected_category": "Apparel / Tops"
+  },
+  {
+    "name": "Navy Blue Athletic Sweatpants",
+    "expected_color": "Navy Blue",
+    "expected_category": "Bottoms / Trousers"
+  },
+  {
+    "name": "Crimson Red Wool Beret Hat",
+    "expected_color": "Crimson Red",
+    "expected_category": "Apparel"
+  },
+  {
+    "name": "Emerald Green Satin Party Top",
+    "expected_color": "Emerald Green",
+    "expected_category": "Apparel / Tops"
+  },
+  {
+    "name": "Chocolate Brown Suede Boots",
+    "expected_color": "Chocolate Brown",
+    "expected_category": "Footwear"
+  },
+  {
+    "name": "Charcoal Grey Casual Hoodie",
+    "expected_color": "Charcoal Grey",
+    "expected_category": "Apparel / Tops"
+  },
+  {
+    "name": "Pastel Pink Pleated Midi Skirt",
+    "expected_color": "Pastel Pink",
+    "expected_category": "Apparel / Dresses"
+  }
+]

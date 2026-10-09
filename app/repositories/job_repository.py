@@ -1,5 +1,4 @@
 import uuid
-from uuid import UUID
 
 from sqlalchemy.orm import Session
 
@@ -18,7 +17,7 @@ class JobRepository:
         self.db.refresh(job)
         return job
 
-    def get_by_id(self, job_id: UUID) -> Job | None:
+    def get_by_id(self, job_id: str) -> Job | None:
         return (
             self.db.query(Job)
             .filter(Job.id == job_id)
@@ -37,7 +36,7 @@ class JobRepository:
         self.db.refresh(job)
         return job
 
-    def delete(self, job_id: UUID) -> bool:
+    def delete(self, job_id: str) -> bool:
         job = self.get_by_id(job_id)
 
         if job is None:
@@ -52,15 +51,22 @@ class JobRepository:
 class InMemoryJobRepository(JobRepository):
 
     def __init__(self):
-        self._jobs: dict[UUID, Job] = {}
+        self._jobs: dict[str, Job] = {}
 
     def create(self, job: Job) -> Job:
+        from datetime import datetime, timezone
+        now = datetime.now(timezone.utc)
         if getattr(job, "id", None) is None:
-            job.id = uuid.uuid4()
+            job.id = str(uuid.uuid4())
+        if getattr(job, "created_at", None) is None:
+            job.created_at = now
+        if getattr(job, "updated_at", None) is None:
+            job.updated_at = now
         self._jobs[job.id] = job
         return job
 
-    def get_by_id(self, job_id: UUID) -> Job | None:
+
+    def get_by_id(self, job_id: str) -> Job | None:
         return self._jobs.get(job_id)
 
     def get_all(self) -> list[Job]:
@@ -70,7 +76,7 @@ class InMemoryJobRepository(JobRepository):
         self._jobs[job.id] = job
         return job
 
-    def delete(self, job_id: UUID) -> bool:
+    def delete(self, job_id: str) -> bool:
         if job_id in self._jobs:
             del self._jobs[job_id]
             return True

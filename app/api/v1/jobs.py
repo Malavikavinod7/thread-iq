@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from fastapi import APIRouter, HTTPException, status
 
 from app.core.dependencies import JobServiceDep
@@ -20,7 +18,7 @@ def create_job(
 
 @router.get("/{job_id}", response_model=JobResponse)
 def get_job(
-    job_id: UUID,
+    job_id: str,
     service: JobServiceDep,
 ):
     job = service.get_job(job_id)

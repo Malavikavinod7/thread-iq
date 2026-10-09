@@ -11,7 +11,7 @@ def test_agent_orchestrator_runs_complete_pipeline():
     job_service = JobService(job_repo)
     orchestrator = AgentOrchestrator(job_service)
 
-    job = Job(product_id=uuid.uuid4(), status=JobStatus.PENDING)
+    job = Job(product_id=str(uuid.uuid4()), status=JobStatus.PENDING)
     created_job = job_service.create_job(job)
 
     result_job = orchestrator.run(created_job)
@@ -28,7 +28,7 @@ def test_job_service_fail_job_updates_status_and_timestamps():
     job_repo = InMemoryJobRepository()
     job_service = JobService(job_repo)
 
-    job = Job(product_id=uuid.uuid4(), status=JobStatus.PENDING)
+    job = Job(product_id=str(uuid.uuid4()), status=JobStatus.PENDING)
     created_job = job_service.create_job(job)
 
     failed_job = job_service.fail_job(created_job, "Processing timeout")

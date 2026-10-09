@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-from uuid import UUID
 
 from app.core.enums import JobStatus
 from app.models.job import Job
@@ -20,18 +19,16 @@ class JobService:
             job.status = JobStatus.PENDING
         return self.repository.create(job)
 
-    def get_job(self, job_id: UUID | str) -> Job | None:
+    def get_job(self, job_id: str) -> Job | None:
         """Get a job by ID."""
-        if isinstance(job_id, str):
-            job_id = UUID(job_id)
         return self.repository.get_by_id(job_id)
 
     def list_jobs(self) -> list[Job]:
         """Return all jobs."""
         return self.repository.get_all()
 
-    def _resolve_job(self, job_or_id: Job | UUID | str) -> Job:
-        """Internal helper to resolve a Job entity from an object or UUID."""
+    def _resolve_job(self, job_or_id: Job | str) -> Job:
+        """Internal helper to resolve a Job entity from an object or ID string."""
         if isinstance(job_or_id, Job):
             return job_or_id
         job = self.get_job(job_or_id)
@@ -39,7 +36,7 @@ class JobService:
             raise ValueError(f"Job with ID '{job_or_id}' not found.")
         return job
 
-    def start_job(self, job_or_id: Job | UUID | str) -> Job:
+    def start_job(self, job_or_id: Job | str) -> Job:
         """
         Transition job status to RUNNING and set started_at & updated_at timestamps.
         """
@@ -50,7 +47,7 @@ class JobService:
         job.updated_at = now
         return self.repository.update(job)
 
-    def complete_job(self, job_or_id: Job | UUID | str) -> Job:
+    def complete_job(self, job_or_id: Job | str) -> Job:
         """
         Transition job status to COMPLETED and set finished_at & updated_at timestamps.
         """
@@ -61,7 +58,7 @@ class JobService:
         job.updated_at = now
         return self.repository.update(job)
 
-    def fail_job(self, job_or_id: Job | UUID | str, error_message: str) -> Job:
+    def fail_job(self, job_or_id: Job | str, error_message: str) -> Job:
         """
         Transition job status to FAILED and set error_message, finished_at & updated_at timestamps.
         """
