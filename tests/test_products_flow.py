@@ -1,5 +1,4 @@
 from app.core.enums import JobStatus
-from app.jobs.dispatcher import SyncJobDispatcher
 from app.models.product import Product
 from app.repositories.job_repository import InMemoryJobRepository
 from app.repositories.product_repository import InMemoryProductRepository
@@ -13,8 +12,7 @@ def test_service_returns_products_from_repository():
     job_repo = InMemoryJobRepository()
     job_service = JobService(job_repo)
     orchestrator = AgentOrchestrator(job_service)
-    dispatcher = SyncJobDispatcher(orchestrator)
-    service = ProductService(product_repo, job_service, dispatcher)
+    service = ProductService(product_repo, job_service, orchestrator)
 
     res = service.list_products()
     products = res["items"]
@@ -24,14 +22,12 @@ def test_service_returns_products_from_repository():
     assert res["total"] == 1
 
 
-
 def test_create_product_automatically_executes_orchestrator_pipeline():
     product_repo = InMemoryProductRepository()
     job_repo = InMemoryJobRepository()
     job_service = JobService(job_repo)
     orchestrator = AgentOrchestrator(job_service)
-    dispatcher = SyncJobDispatcher(orchestrator)
-    service = ProductService(product_repo, job_service, dispatcher)
+    service = ProductService(product_repo, job_service, orchestrator)
 
     new_product = Product(name="New Jeans")
     created = service.create_product(new_product)
@@ -49,8 +45,7 @@ def test_semantic_search_ranks_similar_product_higher():
     job_repo = InMemoryJobRepository()
     job_service = JobService(job_repo)
     orchestrator = AgentOrchestrator(job_service)
-    dispatcher = SyncJobDispatcher(orchestrator)
-    service = ProductService(product_repo, job_service, dispatcher)
+    service = ProductService(product_repo, job_service, orchestrator)
 
     # Ingest two distinct products through the pipeline
     denim = service.create_product(Product(name="Navy Blue Slim Denim Jeans"))
@@ -63,4 +58,3 @@ def test_semantic_search_ranks_similar_product_higher():
     # The denim product should rank first with a higher similarity score
     assert search_results[0]["product"].id == denim.id
     assert search_results[0]["score"] > search_results[1]["score"]
-

@@ -1,17 +1,10 @@
 from collections.abc import Generator
 from typing import Annotated
 
-from fastapi import BackgroundTasks, Depends
+from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from app.core.config import settings
 from app.db.session import get_db_session
-from app.jobs.dispatcher import (
-    BackgroundTaskJobDispatcher,
-    JobDispatcher,
-    SyncJobDispatcher,
-)
-
 from app.repositories.job_repository import JobRepository
 from app.repositories.product_repository import (
     ProductRepository,
@@ -24,7 +17,6 @@ from app.services.product_service import ProductService
 
 def get_db() -> Generator[Session, None, None]:
     db = get_db_session()
-
     try:
         yield db
     finally:
@@ -67,25 +59,6 @@ AgentOrchestratorDep = Annotated[
 ]
 
 
-def get_job_dispatcher(
-    orchestrator: Annotated[
-        AgentOrchestrator,
-        Depends(get_agent_orchestrator),
-    ],
-    background_tasks: BackgroundTasks,
-) -> JobDispatcher:
-    if settings.async_jobs:
-        return BackgroundTaskJobDispatcher(orchestrator, background_tasks)
-    return SyncJobDispatcher(orchestrator)
-
-
-
-JobDispatcherDep = Annotated[
-    JobDispatcher,
-    Depends(get_job_dispatcher),
-]
-
-
 def get_product_repository(
     db: Annotated[Session, Depends(get_db)],
 ) -> ProductRepository:
@@ -101,19 +74,19 @@ def get_product_service(
         JobService,
         Depends(get_job_service),
     ],
-    dispatcher: Annotated[
-        JobDispatcher,
-        Depends(get_job_dispatcher),
+    orchestrator: Annotated[
+        AgentOrchestrator,
+        Depends(get_agent_orchestrator),
     ],
 ) -> ProductService:
     return ProductService(
         repository=repository,
         job_service=job_service,
-        dispatcher=dispatcher,
+        orchestrator=orchestrator,
     )
 
 
 ProductServiceDep = Annotated[
     ProductService,
     Depends(get_product_service),
-]
+]

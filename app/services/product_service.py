@@ -2,10 +2,10 @@ import json
 import logging
 
 from app.core.enums import JobStatus
-from app.jobs.dispatcher import JobDispatcher
 from app.models.job import Job
 from app.models.product import Product
 from app.repositories.product_repository import ProductRepository
+from app.services.agent_orchestrator import AgentOrchestrator
 from app.services.job_service import JobService
 
 logger = logging.getLogger(__name__)
@@ -17,11 +17,11 @@ class ProductService:
         self,
         repository: ProductRepository,
         job_service: JobService,
-        dispatcher: JobDispatcher,
+        orchestrator: AgentOrchestrator,
     ):
         self.repository = repository
         self.job_service = job_service
-        self.dispatcher = dispatcher
+        self.orchestrator = orchestrator
 
     def create_product(self, product: Product) -> Product:
         created_product = self.repository.create(product)
@@ -35,14 +35,14 @@ class ProductService:
             created_product.jobs = []
         created_product.jobs.append(created_job)
 
-
-        # Dispatch job execution via JobDispatcher interface (Sync now, Celery/Redis Queue in future)
-        self.dispatcher.dispatch(created_job)
+        # Run AI enrichment pipeline
+        self.orchestrator.run(created_job)
 
         # After pipeline completes, persist enrichment data on the product
         self._apply_enrichment(created_product, created_job)
 
         return created_product
+
 
     def _apply_enrichment(self, product: Product, job: Job) -> None:
         """Extract enrichment data from completed job results and persist on product."""

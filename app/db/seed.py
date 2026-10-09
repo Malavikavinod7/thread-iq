@@ -9,10 +9,8 @@ from app.db.session import SessionLocal, create_tables
 from app.repositories.product_repository import SQLAlchemyProductRepository
 from app.repositories.job_repository import JobRepository
 from app.services.job_service import JobService
-from app.jobs.dispatcher import SyncJobDispatcher
 from app.services.agent_orchestrator import AgentOrchestrator
 from app.services.product_service import ProductService
-
 from app.models.product import Product
 
 logging.basicConfig(level=logging.INFO)
@@ -51,8 +49,8 @@ def seed_db():
         job_repo = JobRepository(db)
         job_service = JobService(job_repo)
         orchestrator = AgentOrchestrator(job_service)
-        dispatcher = SyncJobDispatcher(orchestrator)
-        product_service = ProductService(product_repo, job_service, dispatcher)
+        product_service = ProductService(product_repo, job_service, orchestrator)
+
 
 
         existing, total = product_repo.list_products(limit=10)

@@ -62,13 +62,13 @@ threadiq/
 │   ├── api/v1/            # FastAPI REST API endpoints
 │   ├── core/              # Config, dependencies, enums, exceptions
 │   ├── db/                # Database engine session, base, and seed script
-│   ├── jobs/              # Job execution dispatchers (Sync/Background)
 │   ├── models/            # SQLAlchemy database models (Product, Job)
 │   ├── repositories/      # SQLAlchemy repository implementations
 │   ├── schemas/           # Pydantic request/response validation schemas
 │   ├── services/          # Business logic, agent orchestrator, product service
 │   ├── static/            # Dashboard web interface (index.html)
 │   └── main.py            # FastAPI application entrypoint
+
 ├── docs/                  # Screenshots & project documentation
 ├── tests/                 # Automated Pytest test suite
 ├── .env.example           # Environment variables template

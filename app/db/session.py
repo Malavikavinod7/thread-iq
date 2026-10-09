@@ -11,7 +11,6 @@ if db_url.startswith("postgres://"):
 
 engine = create_engine(
     db_url,
-    connect_args={"check_same_thread": False} if "sqlite" in db_url else {},
     pool_pre_ping=True,
 )
 
@@ -20,19 +19,10 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def create_tables() -> None:
-    """Create all tables from the SQLAlchemy models and auto-migrate SQLite columns."""
-    import app.models  # Ensure mappers are loaded
+    """Create all tables from the SQLAlchemy models."""
+    import app.models  # noqa: F401
     Base.metadata.create_all(bind=engine)
 
-    if "sqlite" in settings.database_url:
-        with engine.connect() as conn:
-            from sqlalchemy import inspect, text
-            inspector = inspect(engine)
-            if "products" in inspector.get_table_names():
-                columns = [c["name"] for c in inspector.get_columns("products")]
-                if "embedding_data" not in columns:
-                    conn.execute(text("ALTER TABLE products ADD COLUMN embedding_data TEXT"))
-                    conn.commit()
 
 
 
